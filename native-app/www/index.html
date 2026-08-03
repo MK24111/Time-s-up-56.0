@@ -306,6 +306,45 @@ function toast(msg){
   setTimeout(()=>el.remove(), 2200);
 }
 
+// Request notification permission — prefer Capacitor LocalNotifications on native, fall back to Web Notification API
+function requestNotifPermission(_arg){
+  console.debug('requestNotifPermission called', _arg);
+  // Native (Capacitor) path: request plugin permissions first
+  if(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
+    const LocalNotifications = window.Capacitor.Plugins.LocalNotifications;
+    LocalNotifications.requestPermissions().then(res=>{
+      console.debug('LocalNotifications.requestPermissions result', res);
+      const granted = res && (res.display === 'granted' || res.value?.display === 'granted' || res.granted);
+      if(granted){
+        state.settings.notifications = true; saveState(); toast('Reminders turned on'); scheduleStudyReminders();
+      } else {
+        state.settings.notifications = false; saveState(); toast('Notification permission was not granted');
+      }
+      try{ renderSettings(); }catch(e){}
+    }).catch(err=>{
+      console.error('LocalNotifications.requestPermissions error', err);
+      toast('Could not request notification permission');
+      state.settings.notifications = false; saveState(); try{ renderSettings(); }catch(e){}
+    });
+    return;
+  }
+
+  // Fallback to Web Notification API
+  if(!('Notification' in window)){
+    toast('Notifications are not supported on this device yet');
+    return;
+  }
+  Notification.requestPermission().then(perm=>{
+    console.debug('Notification.requestPermission', perm);
+    if(perm==='granted'){
+      state.settings.notifications = true; saveState(); toast('Reminders turned on'); scheduleStudyReminders();
+    } else {
+      state.settings.notifications = false; saveState(); toast('Notification permission was not granted');
+    }
+    try{ renderSettings(); }catch(e){}
+  });
+}
+
 /* ---------- Init ---------- */
 if(!state.weekStart) state.weekStart = getMondayISO(new Date());
 if(state.weekStart !== getMondayISO(new Date())){
