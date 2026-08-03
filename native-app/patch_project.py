@@ -9,7 +9,7 @@ import sys
 
 BASE = "android/app/src/main"
 PKG_DIR = "com/timesup/app"
-FOCUS_DIR = f"{BASE}/java/{PKG_DIR}/focus"
+FOCUS_DIR = f"{BASE}/kotlin/{PKG_DIR}/focus"
 
 def copy_plugin_files():
     print(f"Creating directory: {FOCUS_DIR}")
