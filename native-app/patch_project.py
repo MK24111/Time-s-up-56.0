@@ -1,42 +1,26 @@
 """
 Run from the native-app/ folder, AFTER `npx cap add android` has created the
-android/ project. Copies the Kotlin plugin files into place and patches
+android/ project. Copies the Java plugin files into place and patches
 AndroidManifest.xml and MainActivity.java so NativeFocus and its service/
 activity are registered. Safe to re-run — it checks before adding anything.
 """
 import os
-import sys
 
 BASE = "android/app/src/main"
 PKG_DIR = "com/timesup/app"
-FOCUS_DIR = f"{BASE}/kotlin/{PKG_DIR}/focus"
+FOCUS_DIR = f"{BASE}/java/{PKG_DIR}/focus"
 
 def copy_plugin_files():
-    print(f"Creating directory: {FOCUS_DIR}")
     os.makedirs(FOCUS_DIR, exist_ok=True)
-    
-    for fname in ["NativeFocusPlugin.kt", "FocusBlockerService.kt", "BlockerOverlayActivity.kt"]:
-        src = f"native/{fname}"
-        dst = f"{FOCUS_DIR}/{fname}"
-        
-        if not os.path.exists(src):
-            print(f"ERROR: Source file not found: {src}")
-            print(f"Current directory: {os.getcwd()}")
-            print(f"Files in native/: {os.listdir('native') if os.path.exists('native') else 'native/ does not exist'}")
-            sys.exit(1)
-        
-        with open(src) as f:
+    for fname in ["NativeFocusPlugin.java", "FocusBlockerService.java", "BlockerOverlayActivity.java"]:
+        with open(f"native/{fname}") as f:
             content = f.read()
-        with open(dst, "w") as f:
+        with open(f"{FOCUS_DIR}/{fname}", "w") as f:
             f.write(content)
-        print(f"Copied {fname} -> {dst}")
+        print(f"Copied {fname} -> {FOCUS_DIR}/{fname}")
 
 def patch_manifest():
     path = f"{BASE}/AndroidManifest.xml"
-    if not os.path.exists(path):
-        print(f"ERROR: AndroidManifest.xml not found at {path}")
-        sys.exit(1)
-    
     with open(path) as f:
         manifest = f.read()
 
@@ -72,31 +56,14 @@ def patch_manifest():
 
 def patch_main_activity():
     main_activity_path = None
-    java_base = f"{BASE}/java"
-    
-    print(f"Searching for MainActivity.java in: {java_base}")
-    if not os.path.exists(java_base):
-        print(f"ERROR: {java_base} does not exist!")
-        sys.exit(1)
-    
-    for root, _dirs, files in os.walk(java_base):
+    for root, _dirs, files in os.walk(f"{BASE}/java"):
         if "MainActivity.java" in files:
             main_activity_path = os.path.join(root, "MainActivity.java")
             break
-    
     if not main_activity_path:
-        print("ERROR: MainActivity.java not found!")
-        print(f"Contents of {java_base}:")
-        for root, dirs, files in os.walk(java_base):
-            level = root.replace(java_base, '').count(os.sep)
-            indent = ' ' * 2 * level
-            print(f'{indent}{os.path.basename(root)}/')
-            subindent = ' ' * 2 * (level + 1)
-            for file in files:
-                print(f'{subindent}{file}')
-        sys.exit(1)
+        print("WARNING: MainActivity.java not found — plugin not registered. Register it manually.")
+        return
 
-    print(f"Found MainActivity.java at: {main_activity_path}")
     with open(main_activity_path) as f:
         content = f.read()
 
@@ -123,13 +90,7 @@ def patch_main_activity():
     print(f"Patched {main_activity_path}")
 
 if __name__ == "__main__":
-    try:
-        copy_plugin_files()
-        patch_manifest()
-        patch_main_activity()
-        print("Done.")
-    except Exception as e:
-        print(f"ERROR: {e}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
+    copy_plugin_files()
+    patch_manifest()
+    patch_main_activity()
+    print("Done.")
