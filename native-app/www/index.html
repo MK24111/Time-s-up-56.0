@@ -34,7 +34,7 @@
     --font-body:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
   :root{ color-scheme: dark; }
-  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:pan-y;}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation;}
   html,body{margin:0;padding:0;height:100%;}
   body{
     font-family:var(--font-body);
@@ -99,9 +99,312 @@
   /* ---------- Home / Menu ---------- */
   .home-header{display:flex; justify-content:space-between; align-items:center; padding-top:8px; margin-bottom:18px;}
   .brand{font-family:var(--font-display); font-size:22px; font-weight:700; letter-spacing:.02em;}
-  .brand span{color:var(--gold);} 
+  .brand span{color:var(--gold);}
 
-  /* ... rest of CSS unchanged ... */
+  .verse-card{
+    background:linear-gradient(135deg, var(--ink) 0%, var(--ink-soft) 100%);
+    color:var(--text-light);
+    border-radius:var(--radius);
+    padding:26px 22px;
+    position:relative;
+    overflow:hidden;
+    margin-bottom:22px;
+  }
+  .verse-card::before{
+    content:"";
+    position:absolute; top:-30px; right:-30px;
+    width:120px; height:120px;
+    border:1px solid rgba(201,163,78,.25);
+    border-radius:50%;
+  }
+  .verse-mark{font-family:var(--font-display); font-size:38px; color:var(--gold); line-height:1; margin-bottom:6px;}
+  .verse-text{font-family:var(--font-display); font-size:17px; line-height:1.5; margin-bottom:10px;}
+  .verse-ref{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); opacity:.9;}
+
+  .empty-state{
+    border:1.5px dashed var(--paper-soft);
+    border-radius:var(--radius);
+    padding:26px 18px;
+    text-align:center;
+    color:var(--text-dark);
+    opacity:.75;
+    margin-bottom:18px;
+  }
+
+  .plan-summary{
+    background:var(--paper-soft);
+    border-radius:var(--radius);
+    padding:18px;
+    margin-bottom:16px;
+  }
+  .plan-summary .row{display:flex; justify-content:space-between; align-items:center;}
+  .progress-track{
+    width:100%; height:10px; border-radius:6px; background:rgba(0,0,0,.08);
+    overflow:hidden; margin:10px 0 4px;
+  }
+  .progress-fill{height:100%; background:linear-gradient(90deg, var(--gold), var(--blue)); border-radius:6px; transition:width .4s ease;}
+
+  .footer-credit{
+    text-align:center; font-size:12px; opacity:.55; margin-top:30px; letter-spacing:.03em;
+  }
+
+  /* ---------- Stepper ---------- */
+  .stepper{display:flex; gap:6px; margin-bottom:18px;}
+  .stepper .dot{flex:1; height:4px; border-radius:3px; background:var(--paper-soft);}
+  .stepper .dot.active{background:var(--blue);}
+  .stepper .dot.done{background:var(--gold);}
+
+  .back-row{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+
+  /* ---------- Tier groups & subject cards ---------- */
+  .tier-block{margin-bottom:20px;}
+  .tier-label{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
+  .tier-chip{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:3px 9px; border-radius:20px; color:#fff;}
+  .tier-chip.heavy{background:var(--heavy);}
+  .tier-chip.moderate{background:var(--moderate); color:#3a2b09;}
+  .tier-chip.light{background:var(--light);}
+  .tier-hint{font-size:12px; opacity:.6;}
+
+  .subject-card{
+    display:flex; align-items:center; gap:12px;
+    background:var(--paper-soft);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:8px;
+    cursor:pointer;
+    border:2px solid transparent;
+    position:relative;
+    overflow:hidden;
+  }
+  .subject-card .spine{width:5px; align-self:stretch; border-radius:4px; flex-shrink:0;}
+  .subject-card.heavy .spine{background:var(--heavy); width:7px;}
+  .subject-card.moderate .spine{background:var(--moderate); width:5px;}
+  .subject-card.light .spine{background:var(--light); width:3px;}
+  .subject-card.selected{border-color:var(--blue); background:rgba(43,95,173,.08);}
+  .subject-name{font-weight:600; font-size:15px; flex:1;}
+  .check-circle{
+    width:22px; height:22px; border-radius:50%; border:2px solid var(--paper-soft);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:12px; color:#fff;
+  }
+  .subject-card.selected .check-circle{background:var(--blue); border-color:var(--blue);}
+  .subject-delete{
+    width:26px; height:26px; border-radius:50%; flex-shrink:0;
+    border:1.5px solid var(--heavy); background:rgba(181,73,59,.12); color:var(--heavy);
+    font-size:14px; font-weight:700; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .subject-delete:active{background:var(--heavy); color:#fff;}
+
+  /* ---------- Days selector ---------- */
+  .days-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:18px 0;}
+  .day-num{
+    aspect-ratio:1; border-radius:12px; background:var(--paper-soft);
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px; font-weight:700; cursor:pointer; border:2px solid transparent;
+  }
+  .day-num.selected{border-color:var(--gold); background:rgba(201,163,78,.15); color:var(--gold);}
+
+  /* ---------- Customize ---------- */
+  .day-tabs{display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px;}
+  .day-tab{
+    flex-shrink:0; padding:8px 14px; border-radius:20px; background:var(--paper-soft);
+    font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap;
+  }
+  .day-tab.active{background:var(--blue); color:#fff;}
+
+  .cust-item{
+    background:var(--paper-soft); border-radius:12px; padding:14px; margin-bottom:10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .cust-item .spine{width:5px; align-self:stretch; border-radius:4px;}
+  .cust-item.heavy .spine{background:var(--heavy);}
+  .cust-item.moderate .spine{background:var(--moderate);}
+  .cust-item.light .spine{background:var(--light);}
+  .cust-main{flex:1;}
+  .cust-name{font-weight:600; font-size:14px; margin-bottom:6px;}
+  .duration-control{display:flex; align-items:center; gap:8px;}
+  .duration-control button{
+    width:28px; height:28px; border-radius:8px; border:none; background:var(--paper);
+    font-size:16px; cursor:pointer; color:var(--text-dark);
+  }
+  .duration-val{font-size:13px; font-weight:600; min-width:56px; text-align:center;}
+  .drag-handle{cursor:grab; opacity:.4; font-size:18px; padding:0 4px;}
+  .cust-item.dragging{opacity:.4;}
+
+  input[type="text"], select{
+    width:100%; padding:14px; border-radius:12px; border:1.5px solid var(--paper-soft);
+    background:var(--paper); color:var(--text-dark); font-size:15px; font-family:var(--font-body);
+    margin-bottom:6px;
+  }
+  label.field-label{font-size:12px; text-transform:uppercase; letter-spacing:.08em; opacity:.6; margin-bottom:6px; display:block; margin-top:16px;}
+
+  /* ---------- Timetable ---------- */
+  .tt-header{margin-bottom:16px;}
+  .tt-progress-wrap{margin-bottom:20px;}
+  .tt-day-select{display:flex; gap:6px; overflow-x:auto; margin-bottom:16px; padding-bottom:4px;}
+
+  .tt-item{
+    display:flex; align-items:center; gap:12px;
+    background:var(--paper-soft); border-radius:12px; padding:14px; margin-bottom:8px;
+  }
+  .tt-item.checked{opacity:.55;}
+  .tt-item .spine{width:5px; align-self:stretch; border-radius:4px;}
+  .tt-item.heavy .spine{background:var(--heavy);}
+  .tt-item.moderate .spine{background:var(--moderate);}
+  .tt-item.light .spine{background:var(--light);}
+  .tt-main{flex:1;}
+  .tt-name{font-weight:600; font-size:15px;}
+  .tt-name.strike{text-decoration:line-through;}
+  .tt-dur{font-size:12px; opacity:.6; margin-top:2px;}
+  .tt-checkbox{
+    width:26px; height:26px; border-radius:8px; border:2px solid var(--paper-soft);
+    background:var(--paper); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+  }
+  .tt-checkbox.on{background:var(--blue); border-color:var(--blue); color:#fff;}
+
+  /* ---------- Weekly report ---------- */
+  .report-card{
+    background:var(--paper-soft); border-radius:var(--radius); padding:18px; margin-bottom:14px;
+  }
+  .report-card.focus{border:1.5px solid var(--heavy);}
+  .report-card.star{border:1.5px solid var(--gold);}
+  .report-tag{font-size:11px; text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin-bottom:6px;}
+  .report-tag.focus{color:var(--heavy);}
+  .report-tag.star{color:var(--gold);}
+
+  .app-tag{
+    display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1.5px solid var(--paper-soft);
+    padding:8px 12px; border-radius:20px; font-size:13px; margin:4px 4px 0 0; cursor:pointer;
+  }
+  .app-tag.on{border-color:var(--heavy); color:var(--heavy); background:rgba(181,73,59,.08);}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:var(--ink); color:var(--text-light); padding:12px 20px; border-radius:30px;
+    font-size:13px; z-index:200; box-shadow:0 8px 24px rgba(0,0,0,.3);
+    animation:toastIn .25s ease;
+  }
+  @keyframes toastIn{from{opacity:0; transform:translate(-50%,10px);} to{opacity:1; transform:translate(-50%,0);}}
+
+  .focus-overlay{
+    position:fixed; inset:0; background:rgba(15,23,42,.96); color:#F7F3EA; z-index:300;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px;
+  }
+  .focus-overlay .verse-mark{font-size:50px;}
+
+  /* ---------- Countdown timer ---------- */
+  .tt-item{cursor:pointer;}
+  .timer-meta{text-align:center; margin:6px 0 4px;}
+  .timer-display{
+    font-family:var(--font-display); font-size:64px; font-weight:700;
+    text-align:center; margin:26px 0 18px; letter-spacing:.02em; font-variant-numeric:tabular-nums;
+  }
+  .timer-state{text-align:center; font-size:12.5px; opacity:.6; margin-bottom:6px; text-transform:uppercase; letter-spacing:.08em;}
+  .timer-btns{display:flex; gap:10px; margin-top:26px;}
+  .timer-btns .btn{flex:1;}
+  .btn-stop{background:var(--heavy); color:#fff;}
+  .btn-stop:hover{opacity:.9;}
+  .btn-soft-disabled{opacity:.4;}
+
+  /* ---------- Plan list (WhatsApp-style chat list) ---------- */
+  .plan-row{
+    display:flex; align-items:center; gap:12px;
+    padding:12px 4px; cursor:pointer;
+    border-bottom:1px solid var(--paper-soft);
+  }
+  .plan-row:first-child{ padding-top:4px; }
+  .plan-avatar{
+    width:48px; height:48px; border-radius:50%; flex-shrink:0;
+    background:linear-gradient(135deg, var(--blue), var(--blue-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-weight:700; font-size:18px; color:#fff;
+  }
+  .plan-row-main{flex:1; min-width:0;}
+  .plan-row-top{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+  .plan-row-name{font-weight:600; font-size:15.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .plan-row-pct{font-size:12px; font-weight:700; color:var(--blue); flex-shrink:0;}
+  .plan-row-sub{font-size:12.5px; opacity:.6; margin-top:2px;}
+  .plan-row-bar{width:100%; height:5px; border-radius:4px; background:rgba(255,255,255,.08); margin-top:6px; overflow:hidden;}
+  .plan-row-bar-fill{height:100%; background:linear-gradient(90deg, var(--gold), var(--blue)); border-radius:4px;}
+  .plan-row-menu{
+    width:34px; height:34px; border-radius:50%; border:none; background:transparent;
+    color:var(--text-dark); font-size:15px; flex-shrink:0; cursor:pointer;
+  }
+
+  /* ---------- Floating action button ---------- */
+  .fab{
+    position:fixed; bottom:calc(74px + 22px); right:calc(50% - 240px + 22px);
+    width:58px; height:58px; border-radius:50%;
+    background:var(--blue); color:#fff; border:none;
+    font-size:28px; line-height:1; cursor:pointer;
+    box-shadow:0 10px 24px rgba(43,95,173,.45);
+    display:flex; align-items:center; justify-content:center;
+    z-index:120;
+  }
+  @media (max-width:480px){ .fab{ right:22px; } }
+
+  /* ---------- Action sheet (edit / delete) ---------- */
+  .sheet-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:400;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .sheet{
+    width:100%; max-width:480px; background:var(--paper-soft);
+    border-radius:18px 18px 0 0; padding:8px 10px 26px;
+    animation:sheetUp .2s ease;
+  }
+  @keyframes sheetUp{from{transform:translateY(20px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+  .sheet-title{font-size:13px; opacity:.55; padding:12px 12px 6px; font-weight:600;}
+  .sheet-item{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 12px; border-radius:10px; cursor:pointer; font-size:15px; font-weight:600;
+  }
+  .sheet-item.danger{color:var(--heavy);}
+  .sheet-item:active{background:rgba(255,255,255,.06);}
+
+  /* ---------- Bottom navigation ---------- */
+  .bottom-nav{
+    position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+    width:100%; max-width:480px;
+    display:flex; background:var(--paper-soft); border-top:1px solid rgba(255,255,255,.08);
+    z-index:150;
+  }
+  .bottom-nav-item{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:10px 0 calc(10px + env(safe-area-inset-bottom, 0px));
+    cursor:pointer; color:var(--text-dark); opacity:.5; font-size:11px; font-weight:600;
+  }
+  .bottom-nav-item.active{opacity:1; color:var(--blue);}
+  .bottom-nav-icon{font-size:20px;}
+
+  /* ---------- Notes (Google Keep style) ---------- */
+  .note-card{
+    background:var(--paper-soft); border-radius:12px; padding:14px; margin-bottom:10px; cursor:pointer;
+    border-left:4px solid var(--gold);
+  }
+  .note-card-text{
+    font-size:14px; line-height:1.5; white-space:pre-wrap;
+    max-height:80px; overflow:hidden;
+  }
+  .note-card-meta{font-size:11px; opacity:.5; margin-top:8px;}
+  .note-textarea{
+    width:100%; min-height:65vh; border:none; background:transparent; color:var(--text-dark);
+    font-family:var(--font-body); font-size:16px; line-height:1.6; resize:none; outline:none;
+  }
+
+  /* ---------- Day toggle (choose exact study days) ---------- */
+  .day-toggle-row{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:18px;}
+  .day-toggle-chip{
+    flex:1; min-width:38px; padding:10px 0; text-align:center; border-radius:10px; background:var(--paper-soft);
+    font-size:12.5px; font-weight:700; cursor:pointer; border:2px solid transparent;
+  }
+  .day-toggle-chip.on{border-color:var(--blue); background:rgba(43,95,173,.12); color:var(--blue);}
+
+  /* ---------- Add a custom subject ---------- */
+  .add-subject-box{border:1.5px dashed var(--paper-soft); border-radius:12px; padding:14px; margin-top:4px; margin-bottom:20px;}
+  .add-subject-row{display:flex; gap:8px; margin-top:8px;}
+  .add-subject-row input{margin-bottom:0; flex:2;}
+  .add-subject-row select{margin-bottom:0; flex:1;}
 </style>
 </head>
 <body>
@@ -111,7 +414,6 @@
   <section id="screen-home" class="screen active">
     <div class="home-header">
       <div class="brand">Time's <span>Up</span></div>
-      <button class="icon-btn" onclick="goTo('screen-settings')" aria-label="Settings">⚙️</button>
     </div>
 
     <div class="verse-card">
@@ -127,233 +429,41 @@
     <button class="fab" onclick="startBuild()" aria-label="Build a new study plan">+</button>
   </section>
 
-  <!-- ... many unchanged sections removed here for brevity in the commit, but content preserved ... -->
-
-  <!-- ============ COUNTDOWN TIMER ============ -->
-  <section id="screen-countdown" class="screen">
+  <!-- ============ BUILD: SUBJECTS ============ -->
+  <section id="screen-subjects" class="screen">
     <div class="back-row">
-      <button class="icon-btn" onclick="exitTimerScreen()">←</button>
-      <div class="eyebrow">Study session</div>
+      <button class="icon-btn" onclick="goTo('screen-home')">←</button>
+      <div class="eyebrow">Step 1 of 4</div>
     </div>
-    <div class="timer-meta"><span class="tier-chip" id="timer-tier-chip"></span></div>
-    <h2 style="text-align:center;" id="timer-subject-name">Subject</h2>
-    <div class="timer-state" id="timer-state-label">Ready</div>
-    <div class="timer-display" id="timer-display">00:00</div>
-    <div class="progress-track"><div class="progress-fill" id="timer-progress-fill" style="width:0%"></div></div>
-    <div class="timer-btns">
-      <button type="button" class="btn btn-ghost" id="btn-pause" onclick="pauseTimer()">Pause</button>
-      <button type="button" class="btn btn-primary" id="btn-start" onclick="startTimer()">Start</button>
-      <button type="button" class="btn btn-stop" id="btn-stop" onclick="stopTimer()">Stop</button>
+    <div class="stepper"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <h2>Choose your subjects</h2>
+    <p style="opacity:.65; font-size:13.5px; margin-bottom:18px;">Tap every subject you want on your timetable. Heavy subjects need more focus time, light subjects need less.</p>
+
+    <div id="subject-tiers"></div>
+
+    <div class="add-subject-box">
+      <div class="settings-title" style="margin-bottom:2px;">Don't see your subject?</div>
+      <div class="settings-sub">Add your own — it's saved for every future timetable too.</div>
+      <div class="add-subject-row">
+        <input type="text" id="new-subject-name" placeholder="Subject name">
+        <select id="new-subject-tier">
+          <option value="heavy">Heavy</option>
+          <option value="moderate">Moderate</option>
+          <option value="light">Light</option>
+        </select>
+      </div>
+      <button class="btn btn-ghost" style="margin-top:10px;" onclick="addCustomSubject()">+ Add subject</button>
     </div>
-    <p style="text-align:center; font-size:12px; opacity:.55; margin-top:22px;">Stopping early or letting the timer run out both check this subject off and log your time in the weekly report.</p>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btn-to-days" onclick="goTo('screen-days')" disabled>Next: pick study days</button>
+    </div>
   </section>
 
-  <!-- rest of content preserved -->
-
-</div>
-
-<div class="bottom-nav" id="bottom-nav">
-  <div class="bottom-nav-item" id="nav-timetables" onclick="goTo('screen-home')">
-    <div class="bottom-nav-icon">📅</div>
-    <div>Timetables</div>
-  </div>
-  <div class="bottom-nav-item" id="nav-notes" onclick="goTo('screen-notes')">
-    <div class="bottom-nav-icon">📝</div>
-    <div>Notes</div>
-  </div>
-</div>
-
-<script>
-/* ============================================================
-   TIME'S UP — STUDY PLANNER
-   All data persisted to localStorage so progress survives reload.
-   ============================================================ */
-
-const STORAGE_KEY = 'timesup_state_v1';
-
-// ... most of the JS unchanged; we only patch the timer-related functions below ...
-
-let sessionMemory = {}; // key -> {remaining, elapsed} kept in memory so pausing and navigating away can resume
-let timerDay=null, timerIndex=null, timerItem=null, timerKey=null;
-let timerInterval=null, timerRunning=false;
-
-function openCountdown(day, index, item){
-  console.debug('openCountdown', {day, index, item});
-  timerDay=day; timerIndex=index; timerItem=item;
-  timerKey = day+'_'+index+'_'+item.id;
-  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
-  timerRunning=false;
-  if(!sessionMemory[timerKey] || sessionMemory[timerKey].elapsed===0){
-    sessionMemory[timerKey] = {remaining:item.duration*60, elapsed:0};
-  }
-  document.getElementById('timer-subject-name').textContent = item.name;
-  const chip = document.getElementById('timer-tier-chip');
-  chip.textContent = TIER_LABEL[item.tier];
-  chip.className = 'tier-chip ' + item.tier;
-  updateTimerDisplay();
-  updateTimerButtons();
-  goTo('screen-countdown');
-}
-function updateTimerDisplay(){
-  const s = sessionMemory[timerKey];
-  if(!s) return;
-  const mm = Math.floor(s.remaining/60).toString().padStart(2,'0');
-  const ss = (s.remaining%60).toString().padStart(2,'0');
-  document.getElementById('timer-display').textContent = mm+':'+ss;
-  const total = timerItem.duration*60;
-  const pct = total ? Math.min(100, Math.round((total - s.remaining)/total*100)) : 0;
-  document.getElementById('timer-progress-fill').style.width = pct+'%';
-  document.getElementById('timer-state-label').textContent = timerRunning ? 'Studying…' : (s.elapsed>0 ? 'Paused' : 'Ready');
-}
-function updateTimerButtons(){
-  // disable Start when running or if there's no session memory; Pause only when running; Stop only if session exists
-  document.getElementById('btn-start').disabled = !!timerRunning || !sessionMemory[timerKey];
-  document.getElementById('btn-pause').disabled = !timerRunning;
-  document.getElementById('btn-stop').disabled = !sessionMemory[timerKey];
-}
-function startTimer(){
-  if(timerRunning) return;
-  if(!sessionMemory[timerKey]){ console.warn('startTimer: no session found for', timerKey); return; }
-  console.debug('startTimer', {timerKey, remaining: sessionMemory[timerKey].remaining});
-  timerRunning = true;
-  updateTimerButtons();
-  updateTimerDisplay();
-  if(state.settings && state.settings.focusMode) startNativeFocusIfAvailable(Math.max(1, Math.ceil(sessionMemory[timerKey].remaining/60)));
-  timerInterval = setInterval(()=>{
-    const s = sessionMemory[timerKey];
-    if(!s){ clearInterval(timerInterval); timerInterval=null; console.debug('timer interval stopped: no session'); return; }
-    if(s.remaining<=0){ finishTimer(); return; }
-    s.remaining--; s.elapsed++;
-    // less noisy: only log every 15s or on finish; here we log when remaining % 15 == 0 for debugging
-    if(s.remaining % 15 === 0 || s.remaining < 10) console.debug('timer tick', {timerKey, remaining:s.remaining, elapsed:s.elapsed});
-    updateTimerDisplay();
-  },1000);
-}
-// Pausing stops the countdown without logging or checking anything off — Start resumes from here.
-function pauseTimer(){
-  if(!timerRunning) return;
-  if(!sessionMemory[timerKey]){ console.warn('pauseTimer: no session for', timerKey); return; }
-  console.debug('pauseTimer', {timerKey, elapsed: sessionMemory[timerKey].elapsed});
-  clearInterval(timerInterval);
-  timerInterval=null;
-  timerRunning=false;
-  stopNativeFocusIfAvailable();
-  updateTimerButtons();
-  updateTimerDisplay();
-}
-// Stopping early logs whatever time was studied and checks the subject off.
-function stopTimer(){
-  if(!sessionMemory[timerKey]){ console.warn('stopTimer: no session for', timerKey); return; }
-  console.debug('stopTimer', {timerKey, elapsed: sessionMemory[timerKey].elapsed});
-  clearInterval(timerInterval);
-  timerInterval=null;
-  timerRunning=false;
-  stopNativeFocusIfAvailable();
-  const minutes = logSessionTime();
-  toast('Session logged: '+minutes+' min · marked complete');
-  delete sessionMemory[timerKey];
-  updateTimerButtons();
-  goTo('screen-timetable');
-}
-// Letting the countdown run out to zero also logs the time and checks the subject off.
-function finishTimer(){
-  console.debug('finishTimer', {timerKey});
-  clearInterval(timerInterval);
-  timerInterval=null;
-  timerRunning=false;
-  stopNativeFocusIfAvailable();
-  const minutes = logSessionTime();
-  if(state.settings && state.settings.notifications && 'Notification' in window && Notification.permission==='granted'){
-    new Notification("Time's Up", { body: timerItem.name + " session complete — nice work!" });
-  }
-  toast(timerItem.name+' complete · '+minutes+' min logged');
-  delete sessionMemory[timerKey];
-  updateTimerButtons();
-  goTo('screen-timetable');
-}
-
-// expose timer functions so onclick handlers always find them even in some bundling/hosting setups
-window.openCountdown = openCountdown;
-window.startTimer = startTimer;
-window.pauseTimer = pauseTimer;
-window.stopTimer = stopTimer;
-window.exitTimerScreen = function(){ pauseTimer(); goTo('screen-timetable'); };
-window.updateTimerButtons = updateTimerButtons;
-
-
-/* ---------- WEEKLY REPORT ---------- */
-function openReport(){
-  buildReport();
-  goTo('screen-report');
-}
-
-/* ---------- Focus plugin hooks and toast (unchanged) ---------- */
-function startNativeFocusIfAvailable(minutes){
-  if(window.NativeFocus && typeof window.NativeFocus.start==='function'){
-    window.NativeFocus.start(state.settings.focusApps, minutes);
-  }
-}
-function stopNativeFocusIfAvailable(){
-  if(window.NativeFocus && typeof window.NativeFocus.stop==='function'){
-    window.NativeFocus.stop();
-  }
-}
-function toast(msg){
-  const el = document.createElement('div');
-  el.className = 'toast';
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(), 2200);
-}
-
-// Request notification permission — prefer Capacitor LocalNotifications on native, fall back to Web Notification API
-function requestNotifPermission(_arg){
-  console.debug('requestNotifPermission called', _arg);
-  // Native (Capacitor) path: request plugin permissions first
-  if(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications){
-    const LocalNotifications = window.Capacitor.Plugins.LocalNotifications;
-    LocalNotifications.requestPermissions().then(res=>{
-      console.debug('LocalNotifications.requestPermissions result', res);
-      const granted = res && (res.display === 'granted' || res.value?.display === 'granted' || res.granted);
-      if(granted){
-        state.settings.notifications = true; saveState(); toast('Reminders turned on'); scheduleStudyReminders();
-      } else {
-        state.settings.notifications = false; saveState(); toast('Notification permission was not granted');
-      }
-      try{ renderSettings(); }catch(e){}
-    }).catch(err=>{
-      console.error('LocalNotifications.requestPermissions error', err);
-      toast('Could not request notification permission');
-      state.settings.notifications = false; saveState(); try{ renderSettings(); }catch(e){}
-    });
-    return;
-  }
-
-  // Fallback to Web Notification API
-  if(!('Notification' in window)){
-    toast('Notifications are not supported on this device yet');
-    return;
-  }
-  Notification.requestPermission().then(perm=>{
-    console.debug('Notification.requestPermission', perm);
-    if(perm==='granted'){
-      state.settings.notifications = true; saveState(); toast('Reminders turned on'); scheduleStudyReminders();
-    } else {
-      state.settings.notifications = false; saveState(); toast('Notification permission was not granted');
-    }
-    try{ renderSettings(); }catch(e){}
-  });
-}
-
-/* ---------- Init ---------- */
-if(!state.weekStart) state.weekStart = getMondayISO(new Date());
-if(state.weekStart !== getMondayISO(new Date())){
-  state.weekStart = getMondayISO(new Date());
-}
-
-// Attach remaining functions to window just in case the environment expects globals
-window.exitTimerScreen = window.exitTimerScreen || exitTimerScreen;
-
-</script>
-</body>
-</html>
+  <!-- ============ BUILD: DAYS ============ -->
+  <section id="screen-days" class="screen">
+    <div class="back-row">
+      <button class="icon-btn" onclick="goTo('screen-subjects')">←</button>
+      <div class="eyebrow">Step 2 of 4</div>
+    </div>
+    <div class="stepper"><div class="dot done"></div><div class="dot ac
