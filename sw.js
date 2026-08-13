@@ -2,7 +2,7 @@
 // Caches the app on first load so it opens without internet after that.
 // Bump CACHE_NAME whenever you update times-up.html so old caches get replaced.
 
-const CACHE_NAME = 'times-up-v1';
+const CACHE_NAME = 'times-up-v2';
 const FILES_TO_CACHE = [
   './times-up.html',
   './manifest.json',
